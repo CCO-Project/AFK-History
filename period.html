@@ -1,0 +1,68 @@
+<!DOCTYPE HTML>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AFK History</title>
+    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <link rel="stylesheet" href="css/main.css">
+</head>
+
+<body>
+    <div id="root">
+        <nav id="navbar">
+            <a class="navItem" href="/index.html">關於</a>
+            <a class="navItem" href="/all.html">所有記錄</a>
+            <a class="navItem" href="/period.html">按時間區段</a>
+        </nav>
+        <div id="container">
+            <h2>所有記錄</h2>
+            <p id="data-range">目前資料涵蓋</p>
+            <p>提示：滑鼠按住不放拖移可以選擇時間區間</p>
+
+            <div id="all" class="chart"> </div>
+        </div>
+    </div>   
+
+    <script>
+        window.onload = async () => {
+            let allData = await fetch("data/all-data.json").then(
+                r => r.json()
+            ).then(
+                r => r.map(datum => ({
+                    x: new Date(datum.t),
+                    y: datum.c
+                }))
+            );
+
+            document.querySelector("#data-range").innerText = `目前資料涵蓋 ${allData[0].x.toISOString().split('T')[0]} ~ ${allData[allData.length - 1].x.toISOString().split('T')[0]}`;
+
+            let chart = new CanvasJS.Chart("all", {
+                zoomEnabled: true,
+                title: {
+                    text: "All AFK History"
+                },
+                axisX: {
+                    title: "Datetime (UTC+0)",
+                    valueFormatString: "YYYY-MM-DD",
+                    gridThickness: 2
+                },
+                axisY: {
+                    title: "AFK Players"
+                },
+                data: [{
+                    type: "area",
+                    xValueFormatString: "YYYY-MM-DD HH:mm",
+                    dataPoints: allData
+                }]
+            });
+            
+            
+            chart.render();
+        }
+    </script>
+</body>
+
+</html>
