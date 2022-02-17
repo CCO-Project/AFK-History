@@ -1,3 +1,5 @@
+// 執行於 node.js
+
 const data1 = require("./AFK-collection-20210625-20210719.json");
 const data2 = require("./AFK-collection-20210720-20210916.json");
 const data3 = require("./AFK-collection-20210917-20220205.json");

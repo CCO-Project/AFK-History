@@ -15,7 +15,8 @@
         <nav id="navbar">
             <a class="navItem" href="./index.html">關於</a>
             <a class="navItem" href="./all.html">所有記錄</a>
-            <a class="navItem" href="./period.html">按時間區段</a>
+            <a class="navItem" href="./period.html">根據時間區段</a>
+            <a class="navItem" href="./rank.html">各項排名</a>
         </nav>
         <div id="container">
             <h2>所有記錄</h2>
@@ -39,20 +40,20 @@
             );
 
             document.querySelector("#data-range").innerText =
-                `目前資料涵蓋 ${allData[0].x.toISOString().split('T')[0]} ~ ${allData[allData.length - 1].x.toISOString().split('T')[0]}`;
+                `目前所有資料涵蓋 ${allData[0].x.toISOString().split('T')[0]} ~ ${allData[allData.length - 1].x.toISOString().split('T')[0]}`;
 
             let chart = new CanvasJS.Chart("all", {
                 zoomEnabled: true,
                 title: {
-                    text: "All AFK History"
+                    text: "所有記錄"
                 },
                 axisX: {
-                    title: "Datetime (UTC+0)",
+                    title: "時間 (UTC+0)",
                     valueFormatString: "YYYY-MM-DD HH:mm",
                     gridThickness: 2
                 },
                 axisY: {
-                    title: "AFK Players"
+                    title: "受衆人數"
                 },
                 data: [{
                     type: "area",

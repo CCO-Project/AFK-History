@@ -1,3 +1,5 @@
+// 執行於瀏覽器
+
 /**
  * @typedef Message
  * @property {Array} attachments
@@ -136,16 +138,15 @@ function waitSeconds(second = 6) {
 
 // ================ [ MAIN ] ================ //
 
-// 請先設定這兩個參數值，否則請求必定失敗。
-const authorizationToken = "";
-const xSuperProperties = "";
-// ----------------
-
-
 var allData = {};
 (async () => {
+    // 請先設定這兩個參數值，否則請求必定失敗。
+    const authorizationToken = "";
+    const xSuperProperties = "";
+    // 記得修改日期區間
     const startDate = [2021, 9, 17];
     const endDate = [2022, 2, 5];
+    // -------------------------------------
 
     let start = getTimeStampWithOffset(...startDate, 0);
     let end = getTimeStampWithOffset(...endDate);
