@@ -1,8 +1,9 @@
 // 執行於 node.js
 
-const data1 = require("./AFK-collection-20210625-20210719.json");
-const data2 = require("./AFK-collection-20210720-20210916.json");
-const data3 = require("./AFK-collection-20210917-20220205.json");
+const data1 = require("../rawdata/AFK-collection-20210625-20210719.json");
+const data2 = require("../rawdata/AFK-collection-20210720-20210916.json");
+const data3 = require("../rawdata/AFK-collection-20210917-20220205.json");
+const data4 = require("../rawdata/AFK-collection-20220206-20220217.json");
 
 const fs = require("fs");
 
@@ -83,6 +84,7 @@ let allData = [];
 allData = allData.concat(parser(data1));
 allData = allData.concat(parser(data2));
 allData = allData.concat(parser(data3));
+allData = allData.concat(parser(data4));
 
 
-fs.writeFileSync("./result/all-data.json", JSON.stringify(allData, null, '\t'));
+fs.writeFileSync("./all-data.json", JSON.stringify(allData, null, '\t'));
