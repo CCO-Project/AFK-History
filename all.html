@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AFK History</title>
-    <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="js/canvasjs.min.js"></script>
     <link rel="stylesheet" href="./css/main.css">
 </head>
 
@@ -48,20 +48,23 @@
                     text: "所有記錄"
                 },
                 axisX: {
+                    gridColor: "#0002",
                     title: "時間 (UTC+0)",
                     valueFormatString: "YYYY-MM-DD HH:mm",
                     gridThickness: 2
                 },
                 axisY: {
+                    gridColor: "#0002",
                     title: "受衆人數"
                 },
                 data: [{
-                    type: "area",
+                    type: "scatter",
+                    color: "#1870aa",
+                    markerSize: 4,
                     xValueFormatString: `YYYY-MM-DD HH:mm`,
                     dataPoints: allData
                 }]
             });
-
 
             chart.render();
         }
