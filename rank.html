@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AFK History</title>
-    <script src="js/canvasjs.min.js"></script>
+    <script src="./js/canvasjs.min.js"></script>
     <link rel="stylesheet" href="./css/main.css">
 </head>
 
@@ -20,9 +20,91 @@
         </nav>
         <div id="container">
             <h2>各項排名</h2>
-
-            <p>待補。</p>
         </div>
+        <script>
+            window.onload = async () => {
+                /**
+                 * @typedef Skip
+                 * @property {string} p player name
+                 * @property {number} c count
+                 * @property {number} m minutes
+                 * @property {Date} t timestamp with timezone offset
+                 */
+
+                /** @type {Array<Skip>} */
+                let allData = await fetch("data/all-data.json").then(
+                    r => r.json()
+                ).then(r => r.map(datum => {
+                    let d = new Date(datum.t);
+                    d.setTime(d.getTime() - d.getTimezoneOffset() * 60 * 1000);
+                    datum.t = d;
+                    return datum;
+                }));
+
+                // first
+                let firstAfk = allData[0];
+                showText("第一筆紀錄", "first", `目前可追溯紀錄中第一次跳過是在 ${firstAfk.t.toISOString().split(".")[0].replace("T", " ")} 由 ${firstAfk.p} 發起的，跳過時長 
+                    ${firstAfk.m} 分鐘，當時有 ${firstAfk.c} 人受益。`);
+
+                // (Sample) last day
+                let lastTime = allData[allData.length - 1].t;
+                let aDayAgo = (() => {
+                    let d = new Date(lastTime.getTime());
+                    d.setDate(d.getDate() - 1);
+                    return d;
+                })();
+                let period1d = allData.filter(datum => new Date(datum.t).getTime() >= aDayAgo.getTime());
+                showText("（樣本）最近一天的資料", "lastday", period1d);
+
+                /**
+                 * @param {string} title h3 title
+                 * @param {string} id element id
+                 * @param {(string|Skip|Array<Skip>)} data custom string / Skip / Skip[]
+                 * @param {boolean} [isRank]
+                 */
+                function showText(title, id, data, isRank = false) {
+                    let target = document.querySelector("#container");
+
+                    let h3 = document.createElement("h3");
+                    h3.innerText = title;
+
+                    let element = document.createElement("div");
+                    element.id = id;
+
+                    if (typeof data == "string") {
+                        element.innerHTML = data;
+                    } else {
+                        if (!Array.isArray(data)) {
+                            data = [data];
+                        }
+
+                        if (isRank) {
+
+                        } else {
+                            let tableHTML =
+                                "<table><thead><tr><th>#</th><th>發起人</th><th>時長 (分鐘)</th><th>受益人數</th><th>時間</th></tr></thead><tbody>";
+                            data.forEach((datum, id) => {
+                                tableHTML += `
+                                    <tr>
+                                        <td>${id+1}</td>
+                                        <td>${datum.p}</td>
+                                        <td>${datum.m}</td>
+                                        <td>${datum.c}</td>
+                                        <td>${datum.t.toISOString().split(".")[0].replace("T", " ")}</td>
+                                    </tr>
+                                `;
+                            });
+
+                            tableHTML += "</tbody><table>";
+                            element.innerHTML = tableHTML;
+                        }
+                    }
+
+                    target.insertAdjacentElement("beforeend", h3);
+                    target.insertAdjacentElement("beforeend", element);
+                }
+            }
+        </script>
     </div>
 </body>
 
