@@ -81,14 +81,22 @@
                         if (isRank) {
 
                         } else {
+                            let copy = data.slice();
+                            let longest = copy.sort((a, b) => b.m - a.m)[0].m;
+
                             let tableHTML =
                                 "<table><thead><tr><th>#</th><th>發起人</th><th>時長 (分鐘)</th><th>受益人數</th><th>時間</th></tr></thead><tbody>";
                             data.forEach((datum, id) => {
+                                let rowHighlight = "";
+                                if(datum.m == longest) {
+                                    rowHighlight = ` style="background-color: #f003;"`;
+                                }
+
                                 tableHTML += `
-                                    <tr>
+                                    <tr${rowHighlight}>
                                         <td>${id+1}</td>
                                         <td>${datum.p}</td>
-                                        <td>${datum.m}</td>
+                                        <td style="background: linear-gradient(to right, #4f48 ${datum.m / longest * 100}%, ${(datum.m / longest * 100) + 20}%, #fff0 100%);">${datum.m}</td>
                                         <td>${datum.c}</td>
                                         <td>${datum.t.toISOString().split(".")[0].replace("T", " ")}</td>
                                     </tr>
