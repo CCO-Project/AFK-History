@@ -62,6 +62,10 @@ function parser(collection) {
     Object.values(collection).forEach(messages => {
         messages.forEach(msg => {
             if(msg.author.bot === true) {
+                if(msg.content.startsWith("[")) {
+                    return;
+                }
+
                 let matches = msg.content.match(/^([^\ ]+).+?\(([0-9]+)\ players\).+?skip\ by\ ([0-9]+)\ minutes/);
 
                 if(matches !== null) {
