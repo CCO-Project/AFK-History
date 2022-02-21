@@ -40,11 +40,40 @@
                     datum.t = d;
                     return datum;
                 }));
+                let allDataForSort = allData.slice();
 
                 // first
                 let firstAfk = allData[0];
                 showText("第一筆紀錄", "first", `目前可追溯紀錄中第一次跳過是在 ${firstAfk.t.toISOString().split(".")[0].replace("T", " ")} 由 ${firstAfk.p} 發起的，跳過時長 
                     ${firstAfk.m} 分鐘，當時有 ${firstAfk.c} 人受益。`);
+
+                // player count max
+                let playerCountMaxGroup = allDataForSort.filter(
+                    e => e.c >= 1000
+                ).sort(
+                    (a, b) => b.c - a.c
+                );
+                let playerCountMax = playerCountMaxGroup.filter(e => e.c == playerCountMaxGroup[0].c);
+                showText("最多受益人數", "player-count-max", playerCountMax);
+
+                // player count min
+                let playerCountMinGroup = allDataForSort.filter(
+                    e => e.c < 20
+                ).sort(
+                    (a, b) => a.c - b.c
+                );
+                let playerCountMin = playerCountMinGroup.filter(e => e.c == playerCountMinGroup[0].c);
+                showText("最少受益人數", "player-count-min", playerCountMin);
+
+                // afk skip minute max
+                let afkSkipMinuteMaxGroup = allDataForSort.filter(
+                    e => e.m >= 300
+                ).sort(
+                    (a, b) => b.m - a.m
+                );
+                let afkSkipMinuteMax = afkSkipMinuteMaxGroup.filter(e => e.m == afkSkipMinuteMaxGroup[0].m);
+                showText("最長跳過時間", "afk-skip-minute-max", afkSkipMinuteMax);
+
 
                 // (Sample) last day
                 let lastTime = allData[allData.length - 1].t;
@@ -54,7 +83,7 @@
                     return d;
                 })();
                 let period1d = allData.filter(datum => new Date(datum.t).getTime() >= aDayAgo.getTime());
-                showText("（樣本）最近一天的資料", "lastday", period1d);
+                showText("（壓力測試）最近一天的資料", "lastday", period1d);
 
                 /**
                  * @param {string} title h3 title
@@ -81,14 +110,13 @@
                         if (isRank) {
 
                         } else {
-                            let copy = data.slice();
-                            let longest = copy.sort((a, b) => b.m - a.m)[0].m;
+                            let longest = data.slice().sort((a, b) => b.m - a.m)[0].m;
 
                             let tableHTML =
                                 "<table><thead><tr><th>#</th><th>發起人</th><th>時長 (分鐘)</th><th>受益人數</th><th>時間</th></tr></thead><tbody>";
                             data.forEach((datum, id) => {
                                 let rowHighlight = "";
-                                if(datum.m == longest) {
+                                if (datum.m == longest) {
                                     rowHighlight = ` style="background-color: #f003;"`;
                                 }
 
@@ -98,7 +126,7 @@
                                         <td>${datum.p}</td>
                                         <td style="background: linear-gradient(to right, #4f48 ${datum.m / longest * 100}%, ${(datum.m / longest * 100) + 20}%, #fff0 100%);">${datum.m}</td>
                                         <td>${datum.c}</td>
-                                        <td>${datum.t.toISOString().split(".")[0].replace("T", " ")}</td>
+                                        <td>${dateFormatter(datum.t)}</td>
                                     </tr>
                                 `;
                             });
@@ -110,6 +138,21 @@
 
                     target.insertAdjacentElement("beforeend", h3);
                     target.insertAdjacentElement("beforeend", element);
+                }
+
+                /**
+                 * @param {Date} date
+                 * @returns {string}
+                 */
+                function dateFormatter(date) {
+                    let Y = date.getFullYear();
+                    let M = `0${date.getMonth()+1}`.substr(-2);
+                    let D = `0${date.getDate()}`.substr(-2);
+                    let h = `0${date.getHours()}`.substr(-2);
+                    let m = `0${date.getMinutes()}`.substr(-2);
+                    let s = `0${date.getSeconds()}`.substr(-2);
+
+                    return `${Y}-${M}-${D} ${h}:${m}:${s}`;
                 }
             }
         </script>
