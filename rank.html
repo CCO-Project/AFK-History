@@ -35,11 +35,10 @@
                 let allData = await fetch("data/all-data.json").then(
                     r => r.json()
                 ).then(r => r.map(datum => {
-                    let d = new Date(datum.t);
-                    d.setTime(d.getTime() - d.getTimezoneOffset() * 60 * 1000);
-                    datum.t = d;
+                    datum.t = new Date(datum.t);
                     return datum;
                 }));
+                console.log(allData[0]);
                 let allDataForSort = allData.slice();
 
                 // first
