@@ -38,7 +38,6 @@
                     datum.t = new Date(datum.t);
                     return datum;
                 }));
-                console.log(allData[0]);
                 let allDataForSort = allData.slice();
 
                 // first
@@ -73,24 +72,46 @@
                 let afkSkipMinuteMax = afkSkipMinuteMaxGroup.filter(e => e.m == afkSkipMinuteMaxGroup[0].m);
                 showText("最長跳過時間", "afk-skip-minute-max", afkSkipMinuteMax);
 
+                // afk times rank
+                let afkTimesGroup = {};
+                allDataForSort.forEach(datum => {
+                    if (afkTimesGroup[datum.p] === undefined) {
+                        afkTimesGroup[datum.p] = 0;
+                    }
 
-                // (Sample) last day
-                let lastTime = allData[allData.length - 1].t;
-                let aDayAgo = (() => {
-                    let d = new Date(lastTime.getTime());
-                    d.setDate(d.getDate() - 1);
-                    return d;
-                })();
-                let period1d = allData.filter(datum => new Date(datum.t).getTime() >= aDayAgo.getTime());
-                showText("（壓力測試）最近一天的資料", "lastday", period1d);
+                    afkTimesGroup[datum.p]++;
+                });
+                let afkTimesSort = Object.entries(afkTimesGroup).sort(
+                    (a, b) => b[1] - a[1]
+                ).map(
+                    (each, id) => [id + 1, each[0], each[1]]
+                ).slice(0, 50);
+                showText("發車次數排行（前 50 名）", "afk-times-rank", afkTimesSort, true, ["排名", "玩家名稱", "發車次數"]);
+
+                // afk minutes rank
+                let afkMinutesGroup = {};
+                allDataForSort.forEach(datum => {
+                    if (afkMinutesGroup[datum.p] === undefined) {
+                        afkMinutesGroup[datum.p] = 0;
+                    }
+
+                    afkMinutesGroup[datum.p] += datum.m;
+                });
+                let afkMinutesSort = Object.entries(afkMinutesGroup).sort(
+                    (a, b) => b[1] - a[1]
+                ).map(
+                    (each, id) => [id + 1, each[0], each[1], each[1] / 15 * 64]
+                ).slice(0, 50);
+                showText("發車總時長排行（前 50 名）", "afk-minutes-rank", afkMinutesSort, true, ["排名", "玩家名稱", "總時長（分鐘）", "折算 Units"]);
 
                 /**
                  * @param {string} title h3 title
                  * @param {string} id element id
-                 * @param {(string|Skip|Array<Skip>)} data custom string / Skip / Skip[]
+                 * @param {(string|Skip|Array<Skip>|Array<Array<*>>)} data custom string / Skip / Skip[] / any[][]
                  * @param {boolean} [isRank]
+                 * @param {Array<String>} [rankTableHeader]
                  */
-                function showText(title, id, data, isRank = false) {
+                function showText(title, id, data, isRank = false, rankTableHeader = []) {
                     let target = document.querySelector("#container");
 
                     let h3 = document.createElement("h3");
@@ -107,7 +128,25 @@
                         }
 
                         if (isRank) {
+                            let tableHTML = "<table><thead><tr>";
+                            let columnCount = rankTableHeader.length;
 
+                            for (let i = 0; i < columnCount; i++) {
+                                tableHTML += `<th>${rankTableHeader[i]}</th>`;
+                            }
+
+                            tableHTML += `</th></tr></thead><tbody>`;
+
+                            data.forEach(each => {
+                                tableHTML += "<tr>";
+                                for (let i = 0; i < columnCount; i++) {
+                                    tableHTML += `<td>${each[i]}</td>`;
+                                }
+                                tableHTML += "</tr>";
+                            });
+
+                            tableHTML += "</tbody><table>";
+                            element.innerHTML = tableHTML;
                         } else {
                             let longest = data.slice().sort((a, b) => b.m - a.m)[0].m;
 
