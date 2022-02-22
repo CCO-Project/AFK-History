@@ -31,6 +31,13 @@
                  * @property {Date} t timestamp with timezone offset
                  */
 
+                /**
+                 * @typedef SkipExLower
+                 * @property {string} lower player name but lowercase
+                 * 
+                 * @typedef {Skip & SkipExLower} SkipEx
+                 */
+
                 /** @type {Array<Skip>} */
                 let allData = await fetch("data/all-data.json").then(
                     r => r.json()
@@ -38,7 +45,10 @@
                     datum.t = new Date(datum.t);
                     return datum;
                 }));
+
+                /** @type {Array<SkipEx>} */
                 let allDataForSort = allData.slice();
+                allDataForSort.forEach(datum => datum.lower = datum.p.toLowerCase());
 
                 // first
                 let firstAfk = allData[0];
@@ -72,35 +82,42 @@
                 let afkSkipMinuteMax = afkSkipMinuteMaxGroup.filter(e => e.m == afkSkipMinuteMaxGroup[0].m);
                 showText("最長跳過時間", "afk-skip-minute-max", afkSkipMinuteMax);
 
+                /**
+                 * @typedef RankPlayerData 
+                 * @property {string} player - original parse player name
+                 * @property {number} count
+                 */
                 // afk times rank
+                /** @type {Object.<string, RankPlayerData>} */
                 let afkTimesGroup = {};
                 allDataForSort.forEach(datum => {
-                    if (afkTimesGroup[datum.p] === undefined) {
-                        afkTimesGroup[datum.p] = 0;
+                    if (afkTimesGroup[datum.lower] === undefined) {
+                        afkTimesGroup[datum.lower] = {player: datum.p, count: 0};
                     }
 
-                    afkTimesGroup[datum.p]++;
+                    afkTimesGroup[datum.lower].count++;
                 });
                 let afkTimesSort = Object.entries(afkTimesGroup).sort(
-                    (a, b) => b[1] - a[1]
+                    (a, b) => b[1].count - a[1].count
                 ).map(
-                    (each, id) => [id + 1, each[0], each[1]]
+                    (each, id) => [id + 1, each[1].player, each[1].count]
                 ).slice(0, 50);
                 showText("發車次數排行（前 50 名）", "afk-times-rank", afkTimesSort, true, ["排名", "玩家名稱", "發車次數"]);
 
                 // afk minutes rank
+                /** @type {Object.<string, RankPlayerData>} */
                 let afkMinutesGroup = {};
                 allDataForSort.forEach(datum => {
-                    if (afkMinutesGroup[datum.p] === undefined) {
-                        afkMinutesGroup[datum.p] = 0;
+                    if (afkMinutesGroup[datum.lower] === undefined) {
+                        afkMinutesGroup[datum.lower] = {player: datum.p, count: 0};
                     }
 
-                    afkMinutesGroup[datum.p] += datum.m;
+                    afkMinutesGroup[datum.lower].count += datum.m;
                 });
                 let afkMinutesSort = Object.entries(afkMinutesGroup).sort(
-                    (a, b) => b[1] - a[1]
+                    (a, b) => b[1].count - a[1].count
                 ).map(
-                    (each, id) => [id + 1, each[0], each[1], each[1] / 15 * 64]
+                    (each, id) => [id + 1, each[1].player, each[1].count, each[1].count / 15 * 64]
                 ).slice(0, 50);
                 showText("發車總時長排行（前 50 名）", "afk-minutes-rank", afkMinutesSort, true, ["排名", "玩家名稱", "總時長（分鐘）", "折算 Units"]);
 
