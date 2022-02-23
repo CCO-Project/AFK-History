@@ -41,10 +41,9 @@
  * @param {number} ts
  * @param {number} offset 資料查詢偏移值
  * @param {String} authorizationToken 授權驗證參數（用來判斷你的 Discord 帳號）
- * @param {String} xSuperProperties 授權驗證參數（用來判斷你的 Discord 帳號，不過我不確定這個是不是每個帳號有唯一值，反正我是拆開）
  * @returns {Promise<Result>}
  */
-async function getData(ts, offset, authorizationToken, xSuperProperties) {
+async function getData(ts, offset, authorizationToken) {
     let min_id = getSnowflake(ts);
     let max_id = getSnowflake(ts, true);
     let content = "has used Global Time Skip, all online players currently performing AFK task";
@@ -55,8 +54,7 @@ async function getData(ts, offset, authorizationToken, xSuperProperties) {
             "accept-language": "zh-TW,zh;q=0.9,en-US;q=0.8,en;q=0.7",
             "authorization": authorizationToken,
             "x-debug-options": "bugReporterEnabled",
-            "x-discord-locale": "zh-TW",
-            "x-super-properties": xSuperProperties
+            "x-discord-locale": "zh-TW"
         },
         "referrer": "https://discord.com/channels/742992894167744552/742992894167744555",
         "referrerPolicy": "strict-origin-when-cross-origin",
@@ -140,9 +138,8 @@ function waitSeconds(second = 6) {
 
 var allData = {};
 (async () => {
-    // 請先設定這兩個參數值，否則請求必定失敗。
+    // 請先設定這個參數值，否則請求必定失敗。
     const authorizationToken = "";
-    const xSuperProperties = "";
     // 記得修改日期區間
     const startDate = [2021, 9, 17];
     const endDate = [2022, 2, 5];
@@ -163,7 +160,7 @@ var allData = {};
 
         for (let i = 0; i < total; i += 25) {
             await waitSeconds();
-            let data = await getData(start.ts, i, authorizationToken, xSuperProperties);
+            let data = await getData(start.ts, i, authorizationToken);
 
             if (data.ok) {
                 console.log(` - ${(i/25)+1}`);
