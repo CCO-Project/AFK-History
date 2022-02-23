@@ -35,8 +35,54 @@
             <p>
                 GitHub: <a href="https://github.com/CCO-Project/AFK-History" target="_blank">CCO-Project/AFK-History</a>
             </p>
+
+            <br>
+
+            <div>
+                <b>Last Update</b><br><br>
+                Committer: <span id="update-committer">[Loaging...]</span><br>
+                Date: <span id="update-date">[Loaging...]</span><br>
+                Message: <span id="update-message">[Loaging...]</span><br>
+                <span id="update-message-more"></span>
+            </div>
         </div>
     </div>
+
+    <script>
+        window.onload = async () => {
+            let latestCommitUrl = await fetch(
+                "https://api.github.com/repos/CCO-Project/AFK-History/git/refs/heads/master"
+            ).then(
+                r => r.json()
+            ).then(
+                r => r.object.url
+            );
+
+            let lastCommitDetail = await fetch(latestCommitUrl).then(r => r.json());
+
+            document.querySelector("#update-committer").innerHTML = lastCommitDetail.committer.name;
+            document.querySelector("#update-date").innerHTML = dateFormatter(new Date(lastCommitDetail.committer.date));
+            document.querySelector("#update-message").innerHTML = lastCommitDetail.message.split("\n")[0];
+            document.querySelector("#update-message-more").innerHTML = lastCommitDetail.message.split("\n").slice(1).join("<br>");
+
+
+
+            /**
+             * @param {Date} date
+             * @returns {string}
+             */
+            function dateFormatter(date) {
+                let Y = date.getFullYear();
+                let M = `0${date.getMonth()+1}`.substr(-2);
+                let D = `0${date.getDate()}`.substr(-2);
+                let h = `0${date.getHours()}`.substr(-2);
+                let m = `0${date.getMinutes()}`.substr(-2);
+                let s = `0${date.getSeconds()}`.substr(-2);
+
+                return `${Y}-${M}-${D} ${h}:${m}:${s}`;
+            }
+        }
+    </script>
 </body>
 
 </html>
