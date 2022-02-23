@@ -92,7 +92,14 @@
                 let afkTimesGroup = {};
                 allDataForSort.forEach(datum => {
                     if (afkTimesGroup[datum.lower] === undefined) {
-                        afkTimesGroup[datum.lower] = {player: datum.p, count: 0};
+                        afkTimesGroup[datum.lower] = {
+                            player: datum.p,
+                            count: 0
+                        };
+                    }
+
+                    if (datum.p.match(/^[a-z]/) && afkTimesGroup[datum.lower].player !== datum.p) {
+                        afkTimesGroup[datum.lower].player = datum.p;
                     }
 
                     afkTimesGroup[datum.lower].count++;
@@ -109,7 +116,14 @@
                 let afkMinutesGroup = {};
                 allDataForSort.forEach(datum => {
                     if (afkMinutesGroup[datum.lower] === undefined) {
-                        afkMinutesGroup[datum.lower] = {player: datum.p, count: 0};
+                        afkMinutesGroup[datum.lower] = {
+                            player: datum.p,
+                            count: 0
+                        };
+                    }
+
+                    if (datum.p.match(/^[a-z]/) && afkMinutesGroup[datum.lower].player !== datum.p) {
+                        afkMinutesGroup[datum.lower].player = datum.p;
                     }
 
                     afkMinutesGroup[datum.lower].count += datum.m;
@@ -119,7 +133,9 @@
                 ).map(
                     (each, id) => [id + 1, each[1].player, each[1].count, each[1].count / 15 * 64]
                 ).slice(0, 50);
-                showText("發車總時長排行（前 50 名）", "afk-minutes-rank", afkMinutesSort, true, ["排名", "玩家名稱", "總時長（分鐘）", "折算 Units"]);
+                showText("發車總時長排行（前 50 名）", "afk-minutes-rank", afkMinutesSort, true, ["排名", "玩家名稱", "總時長（分鐘）",
+                    "折算 Units"
+                ]);
 
                 /**
                  * @param {string} title h3 title
