@@ -1,5 +1,8 @@
 # AFK-History
 
+[![Daily Update](https://github.com/CCO-Project/AFK-History/actions/workflows/schedule.yml/badge.svg)](https://github.com/CCO-Project/AFK-History/actions/workflows/schedule.yml)
+[![pages-build-deployment](https://github.com/CCO-Project/AFK-History/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/CCO-Project/AFK-History/actions/workflows/pages/pages-build-deployment)
+
 這裡收集了自 2021-06-25 以來所有課長們開車 (AFK Skip) 的記錄。  
 所有資料均解析於 Discord 的訊息。
 
