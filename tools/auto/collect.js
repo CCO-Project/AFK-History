@@ -65,17 +65,17 @@ let allData = {};
         for (let i = 0; i < total; i += 25) {
             let data = await getData(start.ts, i, authorizationToken);
 
-            if (i === 0) {
-                console.log(`正在取得 ${start.date} 的資料, 本日共有: ${data.data.total_results} 筆資料`);
-            }
-
             if (data.ok) {
+                if (i === 0) {
+                    console.log(`正在取得 ${start.date} 的資料, 本日共有: ${data.data.total_results} 筆資料`);
+                }
+    
                 total = data.data.total_results;
                 temp = temp.concat(data.data.messages.map(e => e[0]));
             } else {
-                // TODO: 補救機制待處理
-                console.log(startDate, offsetDay, `offset(data)=${i}`, data.data);
-                throw new Error(`請求發生錯誤: ${JSON.stringify(data.data)}`);
+                // TODO: 補救機制待處理 (暫時消極處理)
+                console.warn(startDate, offsetDay, `offset(data)=${i}`, data.data);
+                console.warn(`請求發生錯誤: ${JSON.stringify(data.data)}`);
             }
 
             await utils.waitSeconds();
