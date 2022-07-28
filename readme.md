@@ -1,3 +1,7 @@
+我已把帳號刪除並永久退出，資料不會再更新。（反正也沒什麼東西）
+
+要是你感興趣的話歡迎複製（如果那些噁 code 你改得下去的話）
+
 # AFK-History
 
 [![Daily Update](https://github.com/CCO-Project/AFK-History/actions/workflows/schedule.yml/badge.svg)](https://github.com/CCO-Project/AFK-History/actions/workflows/schedule.yml)
